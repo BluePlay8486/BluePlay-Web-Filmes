@@ -31,7 +31,7 @@
             box-sizing: border-box;
         }
         button {
-            background-color: #4CAF50; /* Green color */
+            background-color: #4CAF50; /* Verde */
             color: white;
             cursor: pointer;
             font-size: 16px;
@@ -40,7 +40,7 @@
             background-color: #45a049;
         }
         .button-small {
-            background-color: #e74c3c; /* Red color */
+            background-color: #e74c3c; /* Vermelho */
             font-size: 12px;
             width: 30px;
             padding: 5px;
@@ -59,6 +59,8 @@
         <input type="text" id="titulo" placeholder="Título do Filme">
         <input type="text" id="trailer" placeholder="Link do Trailer (opcional)">
         <input type="text" id="link_magnetico" placeholder="Link Magnético (opcional)">
+        <input type="text" id="thumbnail" placeholder="Link da Thumbnail (opcional)">
+        <input type="text" id="fanart" placeholder="Link da Fanart (opcional)">
         
         <!-- Botão para buscar informações do TMDb -->
         <button id="buscar_tmdb">Buscar Informações do TMDb</button>
@@ -94,15 +96,41 @@
                 $.get(url, function(data) {
                     if (data.results && data.results.length > 0) {
                         var movie = data.results[0];
+
+                        // Mapeamento de Gêneros numéricos para os nomes
+                        var genresMapping = {
+                            28: 'Ação',
+                            878: 'Ficção Científica',
+                            35: 'Comédia',
+                            10751: 'Família',
+                            12: 'Aventura',
+                            14: 'Fantasia',
+                            27: 'Terror',
+                            99: 'Documentário',
+                            10402: 'Música',
+                            10749: 'Romance',
+                            36: 'História',
+                            53: 'Suspense',
+                            80: 'Crime',
+                            10752: 'Guerra',
+                            37: 'Faroeste'
+                        };
+
+                        // Convertendo os números de gêneros para nomes
+                        var genres = movie.genre_ids.map(function(id) {
+                            return genresMapping[id] || 'Desconhecido';
+                        }).join(", ");
+
+                        // Preenchendo as informações
                         $('#info').val(`
 [COLOR yellow]Título Original:[/COLOR] ${movie.original_title}
 [COLOR yellow]Dirigido por:[/COLOR] ${movie.director || 'Desconhecido'}
-[COLOR yellow]Ano:[/COLOR] ${movie.release_date.substring(0, 4)}
+[COLOR yellow]Ano:[/COLOR] ${movie.release_date ? movie.release_date.substring(0, 4) : 'Desconhecido'}
 [COLOR yellow]Duração:[/COLOR] ${movie.runtime || 'Desconhecido'}
-[COLOR yellow]Nota:[/COLOR] ${movie.vote_average}
-[COLOR yellow]Gênero:[/COLOR] ${movie.genre_ids.join(", ")}
-[COLOR yellow]Áudio:[/COLOR] ${movie.original_language}
-[COLOR yellow]Sinopse:[/COLOR] ${movie.overview}
+[COLOR yellow]Nota:[/COLOR] ${movie.vote_average || 'N/A'}
+[COLOR yellow]Gênero:[/COLOR] ${genres}
+[COLOR yellow]Áudio:[/COLOR] ${movie.original_language || 'Desconhecido'}
+[COLOR yellow]Sinopse:[/COLOR] ${movie.overview || 'Desconhecido'}
 `);
                     } else {
                         alert("Filme não encontrado.");
@@ -115,13 +143,16 @@
                 var info = $('#info').val().trim();
                 var linkMagnetico = $('#link_magnetico').val().trim();
                 var trailer = $('#trailer').val().trim();
+                var thumbnail = $('#thumbnail').val().trim();
+                var fanart = $('#fanart').val().trim();
 
                 var xml = `<items>
   <item>
     <title>${$('#titulo').val()}</title>
     <link>${linkMagnetico ? 'plugin://plugin.video.elementum/play?uri=' + linkMagnetico : ''}</link>
     ${trailer ? `<link>plugin://plugin.video.resolverurl_player?url=${trailer}</link>` : ''}
-    <thumbnail>https://image.tmdb.org/t/p/w780/${movie.poster_path}</thumbnail>
+    ${thumbnail ? `<thumbnail>${thumbnail}</thumbnail>` : ''}
+    ${fanart ? `<fanart>${fanart}</fanart>` : ''}
     <info>${info}</info>
   </item>
 </items>`;
@@ -134,6 +165,8 @@
                 $('#titulo').val('');
                 $('#trailer').val('');
                 $('#link_magnetico').val('');
+                $('#thumbnail').val('');
+                $('#fanart').val('');
                 $('#info').val('');
             });
 
@@ -156,4 +189,4 @@
     </script>
 
 </body>
-</html>
+    </html>
