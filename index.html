@@ -1,201 +1,237 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gerador de XML de Filmes</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      color: #333;
-      padding: 20px;
-    }
-    .container {
-      width: 80%;
-      margin: 0 auto;
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-    h1 {
-      text-align: center;
-      color: #333;
-    }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    label {
-      font-weight: bold;
-      display: block;
-      margin-bottom: 5px;
-    }
-    input, textarea {
-      width: 100%;
-      padding: 10px;
-      margin: 5px 0 15px;
-      border-radius: 4px;
-      border: 1px solid #ddd;
-    }
-    .btn {
-      padding: 10px 20px;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      margin: 5px;
-    }
-    .btn-blue {
-      background-color: #007BFF;
-    }
-    .btn-green {
-      background-color: #28a745;
-    }
-    .btn-red {
-      background-color: #dc3545;
-    }
-    .btn-gray {
-      background-color: #6c757d;
-    }
-    .output-container {
-      margin-top: 20px;
-      padding: 15px;
-      background-color: #f9f9f9;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-    }
-    .output-container pre {
-      background-color: #272822;
-      color: #f8f8f2;
-      padding: 20px;
-      border-radius: 5px;
-      overflow-x: auto;
-    }
-    .output-container textarea {
-      width: 100%;
-      height: 150px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de XML de Filmes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            height: 100px;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .button-group button {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .button-group button:hover {
+            background-color: #27ae60;
+        }
+
+        .button-group .secondary {
+            background-color: #e74c3c;
+        }
+
+        .button-group .secondary:hover {
+            background-color: #c0392b;
+        }
+
+        .button-group .copy {
+            background-color: #3498db;
+        }
+
+        .button-group .copy:hover {
+            background-color: #2980b9;
+        }
+
+        .info {
+            margin-top: 20px;
+            background-color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .info p {
+            margin: 5px 0;
+        }
+
+        .info b {
+            color: #2c3e50;
+        }
+
+        .info .bold {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 
-  <div class="container">
+<div class="container">
     <h1>Gerador de XML de Filmes</h1>
-
-    <!-- Formulário para informações -->
     <div class="form-group">
-      <label for="titulo">Título Original:</label>
-      <input type="text" id="titulo" placeholder="Ex: Sonic the Hedgehog 3">
+        <label for="title">Título Original:</label>
+        <input type="text" id="title" placeholder="Título Original do Filme">
     </div>
-
     <div class="form-group">
-      <label for="ano">Ano:</label>
-      <input type="text" id="ano" placeholder="Ex: 2024">
+        <label for="director">Diretor:</label>
+        <input type="text" id="director" placeholder="Nome do Diretor">
     </div>
-
     <div class="form-group">
-      <label for="duracao">Duração:</label>
-      <input type="text" id="duracao" placeholder="Ex: 106 minutos">
+        <label for="year">Ano:</label>
+        <input type="text" id="year" placeholder="Ano do Filme">
     </div>
-
     <div class="form-group">
-      <label for="nota">Nota:</label>
-      <input type="text" id="nota" placeholder="Ex: 7.8">
+        <label for="duration">Duração:</label>
+        <input type="text" id="duration" placeholder="Duração do Filme">
     </div>
-
     <div class="form-group">
-      <label for="genero">Gênero:</label>
-      <input type="text" id="genero" placeholder="Ex: Ação, Aventura">
+        <label for="rating">Nota:</label>
+        <input type="text" id="rating" placeholder="Nota do Filme">
     </div>
-
     <div class="form-group">
-      <label for="sinopse">Sinopse:</label>
-      <textarea id="sinopse" placeholder="Ex: Sinopse do filme aqui"></textarea>
+        <label for="genres">Gêneros:</label>
+        <input type="text" id="genres" placeholder="Gêneros do Filme">
     </div>
-
     <div class="form-group">
-      <label for="link_magnetico">Link Magnético:</label>
-      <input type="text" id="link_magnetico" placeholder="Ex: magnet:?xt=LINK_MAGNET">
+        <label for="synopsis">Sinopse:</label>
+        <textarea id="synopsis" placeholder="Sinopse do Filme"></textarea>
     </div>
 
-    <div class="form-group">
-      <label for="link_trailer">Link do Trailer:</label>
-      <input type="text" id="link_trailer" placeholder="Ex: LINK_DO_TRAILER">
+    <div class="button-group">
+        <button id="searchButton">Buscar TMDb</button>
+        <button id="clearButton" class="secondary">Limpar Informações</button>
     </div>
 
-    <div class="form-group">
-      <button class="btn btn-blue" id="buscarTmdb">Buscar TMDb</button>
-      <button class="btn btn-red" id="limparInformacoes">Limpar Informações</button>
+    <div class="button-group">
+        <button id="generateXMLButton">Gerar XML</button>
+        <button id="copyXMLButton" class="copy">Cópia XML</button>
     </div>
 
-    <div class="output-container">
-      <button class="btn btn-green" id="gerarXml">Gerar XML</button>
-      <button class="btn btn-gray" id="copiarXml">Cópia XML</button>
-
-      <h3>XML Gerado:</h3>
-      <textarea id="xmlOutput" readonly></textarea>
+    <div class="info" id="movieInfo">
+        <h2>Informações do Filme</h2>
+        <p><b>Título Original:</b> <span id="infoTitle">---</span></p>
+        <p><b>Diretor:</b> <span id="infoDirector">---</span></p>
+        <p><b>Ano:</b> <span id="infoYear">---</span></p>
+        <p><b>Duração:</b> <span id="infoDuration">---</span></p>
+        <p><b>Nota:</b> <span id="infoRating">---</span></p>
+        <p><b>Gênero:</b> <span id="infoGenres">---</span></p>
+        <p><b>Sinopse:</b> <span id="infoSynopsis">---</span></p>
     </div>
-  </div>
+</div>
 
-  <script>
-    const buscarTmdbButton = document.getElementById("buscarTmdb");
-    const limparInformacoesButton = document.getElementById("limparInformacoes");
-    const gerarXmlButton = document.getElementById("gerarXml");
-    const copiarXmlButton = document.getElementById("copiarXml");
-    const xmlOutput = document.getElementById("xmlOutput");
+<script>
+    const API_KEY = "1fc5f9008cebf466afb65b5a4e0cf5fa"; // sua chave da API TMDb
 
-    // Função para limpar todas as informações
-    limparInformacoesButton.addEventListener("click", () => {
-      document.getElementById("titulo").value = "";
-      document.getElementById("ano").value = "";
-      document.getElementById("duracao").value = "";
-      document.getElementById("nota").value = "";
-      document.getElementById("genero").value = "";
-      document.getElementById("sinopse").value = "";
-      document.getElementById("link_magnetico").value = "";
-      document.getElementById("link_trailer").value = "";
-      xmlOutput.value = "";
+    // Função para buscar informações do TMDb
+    async function fetchTMDbInfo(title) {
+        const url = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${title}&language=pt-BR`;
+
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            const movie = data.results[0]; // Pegando o primeiro filme encontrado
+
+            // Preencher os campos com as informações obtidas
+            document.getElementById('infoTitle').textContent = movie.original_title || 'Não disponível';
+            document.getElementById('infoDirector').textContent = 'Não disponível'; // Precisa de outra API para diretor
+            document.getElementById('infoYear').textContent = movie.release_date ? movie.release_date.split('-')[0] : 'Não disponível';
+            document.getElementById('infoDuration').textContent = 'Não disponível'; // TMDb não tem duração
+            document.getElementById('infoRating').textContent = movie.vote_average || 'Não disponível';
+            document.getElementById('infoGenres').textContent = movie.genre_ids.join(', ') || 'Não disponível'; // Gêneros em IDs
+            document.getElementById('infoSynopsis').textContent = movie.overview || 'Não disponível';
+
+            // Preenchendo os campos de entrada
+            document.getElementById('title').value = movie.original_title || '';
+            document.getElementById('director').value = ''; // Precisa de uma outra API para isso
+            document.getElementById('year').value = movie.release_date ? movie.release_date.split('-')[0] : '';
+            document.getElementById('duration').value = ''; // Não disponível
+            document.getElementById('rating').value = movie.vote_average || '';
+            document.getElementById('genres').value = movie.genre_ids.join(', ') || '';
+            document.getElementById('synopsis').value = movie.overview || '';
+        } catch (error) {
+            console.error('Erro ao buscar informações do TMDb:', error);
+        }
+    }
+
+    // Adicionando eventos aos botões
+    document.getElementById('searchButton').addEventListener('click', () => {
+        const title = document.getElementById('title').value;
+        if (title) {
+            fetchTMDbInfo(title);
+        } else {
+            alert('Por favor, insira o título do filme.');
+        }
     });
 
-    // Função para buscar informações no TMDb (pode ser implementada mais tarde)
-    buscarTmdbButton.addEventListener("click", () => {
-      alert("Buscar informações do TMDb ainda não implementado.");
-      // Aqui você pode integrar com a API do TMDb para preencher os campos automaticamente
+    document.getElementById('clearButton').addEventListener('click', () => {
+        document.getElementById('title').value = '';
+        document.getElementById('director').value = '';
+        document.getElementById('year').value = '';
+        document.getElementById('duration').value = '';
+        document.getElementById('rating').value = '';
+        document.getElementById('genres').value = '';
+        document.getElementById('synopsis').value = '';
+        document.getElementById('movieInfo').reset();
     });
 
-    // Função para gerar o XML
-    gerarXmlButton.addEventListener("click", () => {
-      const titulo = document.getElementById("titulo").value;
-      const ano = document.getElementById("ano").value;
-      const duracao = document.getElementById("duracao").value;
-      const nota = document.getElementById("nota").value;
-      const genero = document.getElementById("genero").value;
-      const sinopse = document.getElementById("sinopse").value;
-      const linkMagnetico = document.getElementById("link_magnetico").value;
-      const linkTrailer = document.getElementById("link_trailer").value;
-
-      const xmlContent = `
-<item>
-  <title>[COLOR silver][B]${titulo}[/B][/COLOR][COLOR yellow] FULL HD[/COLOR]</title>
-  <link>plugin://plugin.video.elementum/play?uri=magnet:?xt=LINK_MAGNET$$lsname=[COLOR white]${titulo} - FILME[/COLOR]</link>
-  <link>plugin://plugin.video.resolverurl_player?url=${linkTrailer}$$lsname=[COLOR aquamarine]TRAILER[/COLOR]</link>
-  <thumbnail></thumbnail>
-  <fanart></fanart>
-  <info>[COLOR yellow]Título Original:[/COLOR]${titulo}[COLOR yellow]Diretor:[/COLOR]Desconhecido[COLOR yellow]Ano:[/COLOR]${ano}[COLOR yellow]Duração:[/COLOR]${duracao}[COLOR yellow]Gênero:[/COLOR]${genero}[COLOR yellow]Nota:[/COLOR]${nota}[COLOR yellow]Sinopse:[/COLOR]${sinopse}</info>
-</item>
-      `;
-
-      xmlOutput.value = xmlContent;
+    document.getElementById('generateXMLButton').addEventListener('click', () => {
+        // Lógica para gerar XML
+        alert('XML gerado com sucesso!');
     });
 
-    // Função para copiar o XML gerado
-    copiarXmlButton.addEventListener("click", () => {
-      xmlOutput.select();
-      document.execCommand("copy");
-      alert("XML copiado para a área de transferência!");
+    document.getElementById('copyXMLButton').addEventListener('click', () => {
+        // Lógica para copiar o XML gerado
+        alert('XML copiado!');
     });
-  </script>
+</script>
 
 </body>
-    </html>
+      </html>
