@@ -38,108 +38,195 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            width: 100%;
+            margin-top: 10px;
         }
-        button:hover {
+        button:active {
             background-color: #45a049;
         }
-        .output {
+        .small-button {
+            background-color: #f44336;
+            padding: 5px 10px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        #xml-output {
             margin-top: 20px;
+            padding: 10px;
             background-color: #333;
-            padding: 15px;
+            color: white;
             border-radius: 5px;
             white-space: pre-wrap;
             word-wrap: break-word;
-            text-align: left;
+        }
+        .buttons-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .button-label {
+            font-size: 18px;
         }
     </style>
 </head>
 <body>
+
     <div class="container">
         <h1>Gerador de XML para Filmes</h1>
 
-        <!-- Formulário de Entrada -->
-        <input type="text" id="titulo" placeholder="Título do Filme">
-        <input type="text" id="diretor" placeholder="Diretor do Filme">
-        <input type="text" id="ano" placeholder="Ano do Filme">
-        <input type="text" id="duracao" placeholder="Duração do Filme (minutos)">
-        <input type="text" id="nota" placeholder="Nota do Filme (0-10)">
-        <input type="text" id="genero" placeholder="Gênero do Filme">
-        <input type="text" id="audio" placeholder="Áudio do Filme (Ex: 5.1, Stereo)">
-        <input type="text" id="thumbnail" placeholder="Link para a Thumbnail (Capa)">
-        <input type="text" id="fanart" placeholder="Link para a Fanart">
-        <input type="text" id="link_filme" placeholder="Link do Filme">
-        <input type="text" id="link_trailer" placeholder="Link do Trailer (Opcional)">
-        
-        <button id="gerar">Gerar XML</button>
+        <div>
+            <label for="titulo">Título do Filme:</label>
+            <input type="text" id="titulo" placeholder="Exemplo: O Poderoso Chefão">
 
-        <div class="output" id="xml_output"></div>
+            <label for="trailer">Link do Trailer:</label>
+            <input type="text" id="trailer" placeholder="Deixe vazio se não houver trailer">
+
+            <label for="link_magnetico">Link Magnético:</label>
+            <input type="text" id="link_magnetico" placeholder="Exemplo: magnet:?xt=urn:btih:...">
+
+            <label for="sinopse">Sinopse do Filme:</label>
+            <textarea id="sinopse" placeholder="Descrição do filme..."></textarea>
+
+            <label for="ano">Ano do Filme:</label>
+            <input type="text" id="ano" placeholder="Exemplo: 1972">
+
+            <label for="diretor">Diretor do Filme:</label>
+            <input type="text" id="diretor" placeholder="Exemplo: Francis Ford Coppola">
+
+            <label for="genero">Gênero do Filme:</label>
+            <input type="text" id="genero" placeholder="Exemplo: Drama, Crime">
+
+            <label for="duracao">Duração (minutos):</label>
+            <input type="text" id="duracao" placeholder="Exemplo: 175">
+
+            <label for="nota">Nota do Filme:</label>
+            <input type="text" id="nota" placeholder="Exemplo: 9.2">
+
+            <label for="audio">Áudio do Filme:</label>
+            <input type="text" id="audio" placeholder="Exemplo: Português, Inglês">
+
+            <button id="gerar-xml">Gerar XML</button>
+
+            <div class="buttons-container">
+                <button id="limpar" class="small-button">❌ Limpar</button>
+                <button id="copiar-xml" class="small-button">📋 Cópia XML</button>
+            </div>
+
+            <div id="xml-output"></div>
+        </div>
     </div>
 
     <script>
-        $(document).ready(function() {
-            $('#gerar').click(function() {
-                const titulo = $('#titulo').val();
-                const diretor = $('#diretor').val();
-                const ano = $('#ano').val();
-                const duracao = $('#duracao').val();
-                const nota = $('#nota').val();
-                const genero = $('#genero').val();
-                const audio = $('#audio').val();
-                const thumbnail = $('#thumbnail').val();
-                const fanart = $('#fanart').val();
-                const linkFilme = $('#link_filme').val();
-                const linkTrailer = $('#link_trailer').val();
+        // Função para gerar o XML
+        function gerarXML() {
+            const titulo = $('#titulo').val();
+            const trailer = $('#trailer').val();
+            const linkMagnetico = $('#link_magnetico').val();
+            const sinopse = $('#sinopse').val();
+            const ano = $('#ano').val();
+            const diretor = $('#diretor').val();
+            const genero = $('#genero').val();
+            const duracao = $('#duracao').val();
+            const nota = $('#nota').val();
+            const audio = $('#audio').val();
 
-                if (!titulo || !diretor || !ano || !duracao || !nota || !genero || !audio || !thumbnail || !fanart || !linkFilme) {
-                    alert('Por favor, preencha todos os campos obrigatórios!');
-                    return;
-                }
-
-                // Gerar a sinopse usando a API de filmes
-                $.get(`https://api.themoviedb.org/3/search/movie?api_key=1fc5f9008cebf466afb65b5a4e0cf5fa&query=${titulo}`, function(data) {
-                    const sinopse = data.results.length > 0 ? data.results[0].overview : 'Sinopse não encontrada.';
-                    const originalTitle = data.results.length > 0 ? data.results[0].original_title : titulo;
-
-                    // Gerar o XML com os dados fornecidos
-                    let xml = `
+            let xml = `
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<items>
-    <item>
-        <title>[B]${originalTitle}[/B]</title>
-        <link>${linkFilme}$$lsname=[COLOR white]${originalTitle} - FILME[/COLOR]</link>
-`;
+<item>
+    <title>[B]${titulo}[/B]</title>
+    <link>${linkMagnetico ? `plugin://plugin.video.elementum/play?uri=${linkMagnetico}` : ''}</link>
+    <link>${trailer ? `plugin://plugin.video.resolverurl_player?url=${trailer}` : ''}</link>
+    <thumbnail></thumbnail>
+    <fanart></fanart>
+    <info>
+        [COLOR yellow]Título Original:[/COLOR] ${titulo} 
+        [COLOR yellow]Dirigido por:[/COLOR] ${diretor} 
+        [COLOR yellow]Ano:[/COLOR] ${ano} 
+        [COLOR yellow]Duração:[/COLOR] ${duracao} min 
+        [COLOR yellow]Nota:[/COLOR] ${nota} 
+        [COLOR yellow]Gênero:[/COLOR] ${genero} 
+        [COLOR yellow]Áudio:[/COLOR] ${audio} 
+        [COLOR yellow]Sinopse:[/COLOR] ${sinopse}
+    </info>
+</item>`;
 
-                    // Se o link do trailer for fornecido
-                    if (linkTrailer) {
-                        const trailerLink = `plugin://plugin.video.resolverurl_player?url=${linkTrailer}`;
-                        xml += `
-        <link>${trailerLink}$$lsname=[COLOR aquamarine]TRAILER[/COLOR]</link>
-`;
-                    }
+            $('#xml-output').text(xml);
+        }
 
-                    // Informações adicionais
-                    xml += `
-        <thumbnail>${thumbnail}</thumbnail>
-        <fanart>${fanart}</fanart>
-        <info>
-            [COLOR yellow]Título Original:[/COLOR] ${originalTitle}
-            [COLOR yellow]Dirigido por:[/COLOR] ${diretor}
-            [COLOR yellow]Ano:[/COLOR] ${ano}
-            [COLOR yellow]Duração:[/COLOR] ${duracao} min
-            [COLOR yellow]Nota:[/COLOR] ${nota}
-            [COLOR yellow]Gênero:[/COLOR] ${genero}
-            [COLOR yellow]Áudio:[/COLOR] ${audio}
-            [COLOR yellow]Sinopse:[/COLOR] ${sinopse}
-        </info>
-    </item>
-</items>`;
+        // Função para copiar o XML gerado
+        $('#copiar-xml').click(function() {
+            const xmlContent = $('#xml-output').text();
+            if (xmlContent) {
+                navigator.clipboard.writeText(xmlContent)
+                    .then(() => {
+                        alert('XML Copiado para a área de transferência!');
+                    })
+                    .catch(err => {
+                        alert('Erro ao copiar o XML: ' + err);
+                    });
+            } else {
+                alert('Por favor, gere o XML primeiro!');
+            }
+        });
 
-                    // Exibir o XML gerado
-                    $('#xml_output').text(xml);
-                });
-            });
+        // Função para limpar as informações
+        $('#limpar').click(function() {
+            $('#titulo').val('');
+            $('#trailer').val('');
+            $('#link_magnetico').val('');
+            $('#sinopse').val('');
+            $('#ano').val('');
+            $('#diretor').val('');
+            $('#genero').val('');
+            $('#duracao').val('');
+            $('#nota').val('');
+            $('#audio').val('');
+            $('#xml-output').text('');
+        });
+
+        // Função para gerar o XML ao clicar no botão
+        $('#gerar-xml').click(function() {
+            gerarXML();
+        });
+
+        // Armazenamento local das informações
+        function armazenarDados() {
+            localStorage.setItem('titulo', $('#titulo').val());
+            localStorage.setItem('trailer', $('#trailer').val());
+            localStorage.setItem('link_magnetico', $('#link_magnetico').val());
+            localStorage.setItem('sinopse', $('#sinopse').val());
+            localStorage.setItem('ano', $('#ano').val());
+            localStorage.setItem('diretor', $('#diretor').val());
+            localStorage.setItem('genero', $('#genero').val());
+            localStorage.setItem('duracao', $('#duracao').val());
+            localStorage.setItem('nota', $('#nota').val());
+            localStorage.setItem('audio', $('#audio').val());
+        }
+
+        // Carregar dados do armazenamento local
+        function carregarDados() {
+            if (localStorage.getItem('titulo')) {
+                $('#titulo').val(localStorage.getItem('titulo'));
+                $('#trailer').val(localStorage.getItem('trailer'));
+                $('#link_magnetico').val(localStorage.getItem('link_magnetico'));
+                $('#sinopse').val(localStorage.getItem('sinopse'));
+                $('#ano').val(localStorage.getItem('ano'));
+                $('#diretor').val(localStorage.getItem('diretor'));
+                $('#genero').val(localStorage.getItem('genero'));
+                $('#duracao').val(localStorage.getItem('duracao'));
+                $('#nota').val(localStorage.getItem('nota'));
+                $('#audio').val(localStorage.getItem('audio'));
+            }
+        }
+
+        // Carregar dados quando a página é carregada
+        $(document).ready(function() {
+            carregarDados();
+        });
+
+        // Salvar dados após qualquer alteração
+        $('input, textarea').on('input', function() {
+            armazenarDados();
         });
     </script>
 </body>
-  </html>
+    </html>
