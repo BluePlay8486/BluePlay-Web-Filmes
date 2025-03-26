@@ -62,6 +62,9 @@
         <label class="input-label">Título Original:</label>
         <input type="text" id="original-title" disabled>
         
+        <label class="input-label">Diretor:</label>
+        <input type="text" id="director" disabled>
+
         <label class="input-label">Ano:</label>
         <input type="text" id="release-year" disabled>
 
@@ -119,6 +122,12 @@
                     document.getElementById('rating').value = movie.vote_average;
                     document.getElementById('genre').value = await getGenres(movie.genre_ids);
                     document.getElementById('synopsis').value = movie.overview || 'Sinopse não disponível';
+
+                    // Obtendo o nome do diretor (se disponível)
+                    const creditsResponse = await fetch(`${baseUrl}/movie/${movie.id}/credits?api_key=${apiKey}&language=pt-BR`);
+                    const creditsData = await creditsResponse.json();
+                    const director = creditsData.crew.find(person => person.job === 'Director');
+                    document.getElementById('director').value = director ? director.name : 'Desconhecido';
                 } else {
                     alert('Filme não encontrado.');
                 }
@@ -143,6 +152,7 @@
         // Limpar as informações
         clearButton.addEventListener('click', () => {
             document.getElementById('original-title').value = '';
+            document.getElementById('director').value = '';
             document.getElementById('release-year').value = '';
             document.getElementById('duration').value = '';
             document.getElementById('rating').value = '';
@@ -162,15 +172,19 @@
             const synopsis = document.getElementById('synopsis').value;
             const thumbnail = document.getElementById('thumbnail').value;
             const fanart = document.getElementById('fanart').value;
+            const director = document.getElementById('director').value;
 
             const xml = `
 <movie>
-    <title>${originalTitle}</title>
-    <year>${releaseYear}</year>
-    <duration>${duration}</duration>
-    <rating>${rating}</rating>
-    <genre>${genre}</genre>
-    <synopsis>${synopsis}</synopsis>
+    <info>
+        <title>${originalTitle}</title>
+        <director>${director}</director>
+        <year>${releaseYear}</year>
+        <duration>${duration}</duration>
+        <rating>${rating}</rating>
+        <genre>${genre}</genre>
+        <synopsis>${synopsis}</synopsis>
+    </info>
     <thumbnail>${thumbnail}</thumbnail>
     <fanart>${fanart}</fanart>
 </movie>`;
@@ -185,12 +199,15 @@
         copyButton.addEventListener('click', () => {
             const xmlContent = `
 <movie>
-    <title>${document.getElementById('original-title').value}</title>
-    <year>${document.getElementById('release-year').value}</year>
-    <duration>${document.getElementById('duration').value}</duration>
-    <rating>${document.getElementById('rating').value}</rating>
-    <genre>${document.getElementById('genre').value}</genre>
-    <synopsis>${document.getElementById('synopsis').value}</synopsis>
+    <info>
+        <title>${document.getElementById('original-title').value}</title>
+        <director>${document.getElementById('director').value}</director>
+        <year>${document.getElementById('release-year').value}</year>
+        <duration>${document.getElementById('duration').value}</duration>
+        <rating>${document.getElementById('rating').value}</rating>
+        <genre>${document.getElementById('genre').value}</genre>
+        <synopsis>${document.getElementById('synopsis').value}</synopsis>
+    </info>
     <thumbnail>${document.getElementById('thumbnail').value}</thumbnail>
     <fanart>${document.getElementById('fanart').value}</fanart>
 </movie>`;
@@ -202,4 +219,4 @@
         });
     </script>
 </body>
-            </html>
+    </html>
