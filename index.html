@@ -6,118 +6,162 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gerador de XML para Filmes</title>
   <style>
+    /* Estilos gerais */
     body {
-      font-family: Arial, sans-serif;
-      background-color: #121212;
-      color: #fff;
+      font-family: 'Roboto', sans-serif;
+      background-color: #f4f4f4;
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
     header {
-      background-color: #1f1f1f;
+      background-color: #004d80;
       color: #fff;
       text-align: center;
-      padding: 1em;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      padding: 30px 0;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
-    h1 {
-      font-size: 24px;
+    header h1 {
+      font-size: 40px;
       margin: 0;
+      letter-spacing: 1px;
     }
 
     .container {
       display: flex;
       justify-content: center;
-      margin: 20px;
+      padding: 40px;
     }
 
     .form-container {
-      background-color: #2c2c2c;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-      width: 50%;
-      max-width: 800px;
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      width: 80%;
+      max-width: 1100px;
+      display: flex;
+      flex-direction: column;
     }
 
     h2 {
       text-align: center;
       margin-bottom: 20px;
+      font-size: 30px;
+      color: #333;
     }
 
     .input-field,
     .button-container button {
       width: 100%;
-      padding: 10px;
+      padding: 15px;
       margin: 10px 0;
-      border-radius: 5px;
-      border: 1px solid #444;
-      background-color: #333;
-      color: #fff;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      background-color: #fafafa;
+      color: #333;
       font-size: 16px;
+      transition: 0.3s;
+    }
+
+    .input-field input,
+    .input-field textarea {
+      background-color: #fafafa;
+    }
+
+    .input-field input:focus,
+    .input-field textarea:focus {
+      border-color: #004d80;
+      outline: none;
     }
 
     .button-container button {
-      background-color: #ff6f00;
+      background-color: #004d80;
+      color: #fff;
       cursor: pointer;
-      transition: background-color 0.3s;
     }
 
     .button-container button:hover {
-      background-color: #e65c00;
-    }
-
-    .input-field input {
-      background-color: #444;
+      background-color: #003b66;
     }
 
     .info-section {
-      background-color: #333;
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 20px;
+      background-color: #f9f9f9;
+      padding: 25px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      border: 1px solid #ddd;
     }
 
     .info-section label {
-      display: block;
+      font-weight: bold;
       margin-bottom: 8px;
+      display: block;
+    }
+
+    .info-section input,
+    .info-section textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      background-color: #f9f9f9;
+    }
+
+    .info-section textarea {
+      height: 120px;
+      resize: none;
     }
 
     footer {
       text-align: center;
-      padding: 10px;
-      background-color: #1f1f1f;
-      color: #aaa;
-      font-size: 14px;
-      position: fixed;
-      width: 100%;
-      bottom: 0;
+      padding: 20px;
+      background-color: #004d80;
+      color: #fff;
+      font-size: 16px;
     }
 
     /* Estilo para a área de exibição do XML */
     .xml-container {
-      background-color: #333;
-      color: #fff;
+      background-color: #fff;
       padding: 20px;
-      border-radius: 8px;
-      margin-top: 20px;
-      max-height: 300px;
-      overflow-y: scroll;
-      font-family: monospace;
+      border-radius: 10px;
+      margin-top: 30px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      font-family: 'Courier New', monospace;
+      color: #333;
+      overflow-x: auto;
     }
 
     .xml-container pre {
       white-space: pre-wrap;
       word-wrap: break-word;
-      margin: 0;
     }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+      .form-container {
+        width: 90%;
+        padding: 20px;
+      }
+
+      header h1 {
+        font-size: 28px;
+      }
+
+      .button-container button {
+        font-size: 14px;
+      }
+    }
+
   </style>
 </head>
 
 <body>
+
   <header>
     <h1>Gerador de XML para Filmes</h1>
   </header>
@@ -139,19 +183,13 @@
         <input type="text" id="magnet-link" placeholder="Link Magnético" />
       </div>
 
-      <!-- Informações Preenchidas Automaticamente (serão preenchidas via TMDb API) -->
+      <!-- Informações Preenchidas Automaticamente -->
       <div class="info-section">
         <label for="original-title">Título Original:</label>
         <input type="text" id="original-title" disabled />
 
-        <label for="director">Diretor:</label>
-        <input type="text" id="director" disabled />
-
         <label for="year">Ano:</label>
         <input type="text" id="year" disabled />
-
-        <label for="duration">Duração:</label>
-        <input type="text" id="duration" disabled />
 
         <label for="genre">Gênero:</label>
         <input type="text" id="genre" disabled />
@@ -160,7 +198,7 @@
         <input type="text" id="rating" disabled />
 
         <label for="synopsis">Sinopse:</label>
-        <textarea id="synopsis" rows="4" disabled></textarea>
+        <textarea id="synopsis" disabled></textarea>
       </div>
 
       <!-- Botões -->
@@ -184,6 +222,29 @@
   </footer>
 
   <script>
+    // Mapa de Gêneros (ID -> Nome do Gênero)
+    const genreMap = {
+      28: 'Ação',
+      12: 'Aventura',
+      16: 'Animação',
+      35: 'Comédia',
+      80: 'Crime',
+      99: 'Documentário',
+      18: 'Drama',
+      10751: 'Família',
+      14: 'Fantasia',
+      36: 'História',
+      27: 'Terror',
+      10402: 'Música',
+      9648: 'Mistério',
+      10749: 'Romance',
+      878: 'Ficção Científica',
+      10770: 'Cinema TV',
+      53: 'Suspense',
+      10752: 'Guerra',
+      37: 'Faroeste'
+    };
+
     // Função para buscar informações do TMDb
     async function fetchTMDbInfo() {
       const movieTitle = document.getElementById("movie-title").value;
@@ -196,12 +257,13 @@
 
       if (movie) {
         document.getElementById("original-title").value = movie.original_title;
-        document.getElementById("director").value = "Desconhecido"; // Não disponível na pesquisa básica
         document.getElementById("year").value = movie.release_date.split("-")[0];
-        document.getElementById("duration").value = "Desconhecido"; // Não disponível na pesquisa básica
-        document.getElementById("genre").value = movie.genre_ids.join(", ");
         document.getElementById("rating").value = movie.vote_average;
         document.getElementById("synopsis").value = movie.overview;
+
+        // Mapeando os gêneros (convertendo IDs para nomes)
+        const genres = movie.genre_ids.map(id => genreMap[id] || 'Desconhecido').join(', ');
+        document.getElementById("genre").value = genres;
       }
     }
 
@@ -211,9 +273,7 @@
       document.getElementById("trailer-link").value = '';
       document.getElementById("magnet-link").value = '';
       document.getElementById("original-title").value = '';
-      document.getElementById("director").value = '';
       document.getElementById("year").value = '';
-      document.getElementById("duration").value = '';
       document.getElementById("genre").value = '';
       document.getElementById("rating").value = '';
       document.getElementById("synopsis").value = '';
@@ -227,7 +287,6 @@
       const trailerLink = document.getElementById("trailer-link").value;
       const genre = document.getElementById("genre").value;
       const year = document.getElementById("year").value;
-      const duration = document.getElementById("duration").value;
       const rating = document.getElementById("rating").value;
       const synopsis = document.getElementById("synopsis").value;
 
@@ -235,31 +294,27 @@
 <item>
   <title>[COLOR silver][B]${movieTitle}[/B][/COLOR][COLOR yellow] FULL HD[/COLOR]</title>
   <link>plugin://plugin.video.elementum/play?uri=magnet:?xt=LINK_MAGNET$$lsname=[COLOR white]${movieTitle} - FILME[/COLOR]</link>
-  <link>plugin://plugin.video.resolverurl_player?url=${trailerLink}$$lsname=[COLOR aquamarine]TRAILER[/COLOR]</link>
-  <thumbnail></thumbnail>
-  <fanart></fanart>
-  <info>
-    [COLOR yellow]Título Original:[/COLOR] ${originalTitle}
-    [COLOR yellow]Ano:[/COLOR] ${year}
-    [COLOR yellow]Duração:[/COLOR] ${duration}
-    [COLOR yellow]Gênero:[/COLOR] ${genre}
-    [COLOR yellow]Nota:[/COLOR] ${rating}
-    [COLOR yellow]Sinopse:[/COLOR] ${synopsis}
-  </info>
+  <link>plugin://plugin.video.resolverurl_player?url=${trailerLink}</link>
+  <genre>${genre}</genre>
+  <year>${year}</year>
+  <rating>${rating}</rating>
+  <synopsis>${synopsis}</synopsis>
 </item>
-      `;
+`;
 
       document.getElementById("generated-xml").textContent = xmlContent;
     }
 
     // Função para copiar o XML gerado
     function copyXML() {
-      const xmlContent = document.getElementById("generated-xml").textContent;
-      navigator.clipboard.writeText(xmlContent).then(() => {
-        alert("XML copiado para a área de transferência!");
-      });
+      const generatedXML = document.getElementById("generated-xml");
+      const range = document.createRange();
+      range.selectNode(generatedXML);
+      window.getSelection().addRange(range);
+      document.execCommand('copy');
     }
   </script>
+
 </body>
 
-</html>
+          </html>
