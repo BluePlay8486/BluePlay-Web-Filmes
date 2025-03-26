@@ -1,310 +1,346 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de XML para Filmes</title>
-    <style>
-        /* Estilo geral */
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #181818;
-            color: #fff;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        header {
-            background-color: #333;
-            color: #fff;
-            text-align: center;
-            padding: 30px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        header h1 {
-            font-size: 36px;
-            margin: 0;
-        }
-
-        .container {
-            display: flex;
-            justify-content: center;
-            margin-top: 40px;
-            padding: 20px;
-        }
-
-        .form-container {
-            background-color: #222;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            width: 80%;
-            max-width: 900px;
-            color: #fff;
-        }
-
-        .input-field,
-        .button-container button {
-            width: 100%;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 8px;
-            border: 1px solid #444;
-            background-color: #333;
-            color: #fff;
-            font-size: 16px;
-            transition: 0.3s;
-        }
-
-        .input-field input,
-        .input-field textarea {
-            background-color: #333;
-            border: 1px solid #555;
-        }
-
-        .input-field input:focus,
-        .input-field textarea:focus {
-            border-color: #00bfff;
-            outline: none;
-        }
-
-        .button-container button {
-            background-color: #ff6600;
-            cursor: pointer;
-        }
-
-        .button-container button:hover {
-            background-color: #ff4500;
-        }
-
-        .info-section {
-            background-color: #333;
-            padding: 25px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            border: 1px solid #444;
-        }
-
-        .info-section label {
-            font-weight: bold;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .info-section input,
-        .info-section textarea {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            border-radius: 8px;
-            border: 1px solid #444;
-            background-color: #222;
-        }
-
-        .info-section textarea {
-            height: 120px;
-            resize: none;
-        }
-
-        footer {
-            text-align: center;
-            padding: 20px;
-            background-color: #333;
-            color: #fff;
-            font-size: 16px;
-        }
-
-        /* Estilo para a área de exibição do XML */
-        .xml-container {
-            background-color: #222;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 30px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            font-family: 'Courier New', monospace;
-            color: #fff;
-            overflow-x: auto;
-        }
-
-        .xml-container pre {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-
-        /* Responsividade */
-        @media (max-width: 768px) {
-            .form-container {
-                width: 90%;
-                padding: 20px;
-            }
-
-            header h1 {
-                font-size: 28px;
-            }
-
-            .button-container button {
-                font-size: 14px;
-            }
-        }
-
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerador de XML para Filmes</title>
+  <style>
+    /* Estilos Gerais */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #181818;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    header {
+      background-color: #333;
+      text-align: center;
+      padding: 30px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    header h1 {
+      font-size: 36px;
+      margin: 0;
+    }
+    .container {
+      display: flex;
+      justify-content: center;
+      margin: 40px 20px;
+    }
+    .form-container {
+      background-color: #222;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      width: 80%;
+      max-width: 900px;
+      color: #fff;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 28px;
+      color: #fff;
+    }
+    .input-field,
+    .button-container button {
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #444;
+      background-color: #333;
+      color: #fff;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+    .input-field input,
+    .input-field textarea {
+      background-color: #333;
+      border: 1px solid #555;
+    }
+    .input-field input:focus,
+    .input-field textarea:focus {
+      border-color: #00bfff;
+      outline: none;
+    }
+    .button-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .button-container button {
+      flex: 1;
+      min-width: 120px;
+      background-color: #ff6600;
+      cursor: pointer;
+    }
+    .button-container button:hover {
+      background-color: #ff4500;
+    }
+    .info-section {
+      background-color: #333;
+      padding: 25px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      border: 1px solid #444;
+    }
+    .info-section label {
+      font-weight: bold;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .info-section input,
+    .info-section textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: 1px solid #444;
+      background-color: #222;
+    }
+    .info-section textarea {
+      height: 120px;
+      resize: none;
+    }
+    /* Área para Thumbnail e Fanart */
+    .image-section {
+      background-color: #333;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      border: 1px solid #444;
+    }
+    .image-section label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 8px;
+    }
+    .image-section input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #444;
+      background-color: #222;
+      color: #fff;
+    }
+    /* Área de exibição do XML */
+    .xml-container {
+      background-color: #222;
+      padding: 20px;
+      border-radius: 10px;
+      margin-top: 30px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      font-family: 'Courier New', monospace;
+      color: #fff;
+      overflow-x: auto;
+    }
+    .xml-container pre {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      margin: 0;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      background-color: #333;
+      color: #aaa;
+      font-size: 16px;
+    }
+    @media (max-width: 768px) {
+      .form-container {
+        width: 90%;
+        padding: 20px;
+      }
+      header h1 {
+        font-size: 28px;
+      }
+      .button-container button {
+        font-size: 14px;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <header>
+    <h1>Gerador de XML para Filmes</h1>
+  </header>
 
-    <header>
-        <h1>Gerador de XML para Filmes</h1>
-    </header>
+  <div class="container">
+    <div class="form-container">
+      <h2>Preencha as informações do filme</h2>
 
-    <div class="container">
-        <div class="form-container">
-            <h2>Preencha as informações do filme</h2>
+      <!-- Campos de Input -->
+      <div class="input-field">
+        <input type="text" id="movie-title" placeholder="Título do Filme" />
+      </div>
+      <div class="input-field">
+        <input type="text" id="trailer-link" placeholder="Link do Trailer" />
+      </div>
+      <div class="input-field">
+        <input type="text" id="magnet-link" placeholder="Link Magnético" />
+      </div>
 
-            <!-- Campos de Input -->
-            <div class="input-field">
-                <input type="text" id="movie-title" placeholder="Título do Filme" />
-            </div>
+      <!-- Seção de Informações Preenchidas (via TMDb) -->
+      <div class="info-section">
+        <label for="original-title">Título Original:</label>
+        <input type="text" id="original-title" disabled />
 
-            <div class="input-field">
-                <input type="text" id="trailer-link" placeholder="Link do Trailer" />
-            </div>
+        <label for="year">Ano:</label>
+        <input type="text" id="year" disabled />
 
-            <div class="input-field">
-                <input type="text" id="magnet-link" placeholder="Link Magnético" />
-            </div>
+        <label for="genre">Gênero:</label>
+        <input type="text" id="genre" disabled />
 
-            <!-- Informações preenchidas automaticamente -->
-            <div class="info-section">
-                <label for="original-title">Título Original:</label>
-                <input type="text" id="original-title" disabled />
+        <label for="rating">Nota:</label>
+        <input type="text" id="rating" disabled />
 
-                <label for="year">Ano:</label>
-                <input type="text" id="year" disabled />
+        <label for="synopsis">Sinopse:</label>
+        <textarea id="synopsis" disabled></textarea>
+      </div>
 
-                <label for="genre">Gênero:</label>
-                <input type="text" id="genre" disabled />
+      <!-- Seção para Thumbnail e Fanart -->
+      <div class="image-section">
+        <label for="thumbnail">Link Thumbnail:</label>
+        <input type="text" id="thumbnail" placeholder="Insira o link da Thumbnail" />
 
-                <label for="rating">Nota:</label>
-                <input type="text" id="rating" disabled />
+        <label for="fanart">Link Fanart:</label>
+        <input type="text" id="fanart" placeholder="Insira o link da Fanart" />
+      </div>
 
-                <label for="synopsis">Sinopse:</label>
-                <textarea id="synopsis" disabled></textarea>
-            </div>
+      <!-- Botões -->
+      <div class="button-container">
+        <button onclick="fetchTMDbInfo()">Buscar TMDb</button>
+        <button onclick="clearForm()">Limpar Informações</button>
+        <button onclick="generateXML()">Gerar XML</button>
+        <button onclick="copyXML()">Cópia XML</button>
+      </div>
 
-            <!-- Botões -->
-            <div class="button-container">
-                <button onclick="fetchTMDbInfo()">Buscar TMDb</button>
-                <button onclick="clearForm()">Limpar Informações</button>
-                <button onclick="generateXML()">Gerar XML</button>
-                <button onclick="copyXML()">Cópia XML</button>
-            </div>
-
-            <!-- Área para exibir o XML gerado -->
-            <div class="xml-container">
-                <h3>XML Gerado:</h3>
-                <pre id="generated-xml"></pre>
-            </div>
-        </div>
+      <!-- Área para exibir o XML gerado -->
+      <div class="xml-container">
+        <h3>XML Gerado:</h3>
+        <pre id="generated-xml"></pre>
+      </div>
     </div>
+  </div>
 
-    <footer>
-        <p>&copy; 2025 Gerador de XML para Filmes</p>
-    </footer>
+  <footer>
+    <p>&copy; 2025 Gerador de XML para Filmes</p>
+  </footer>
 
-    <script>
-        // Mapa de Gêneros (ID -> Nome do Gênero)
-        const genreMap = {
-            28: 'Ação',
-            12: 'Aventura',
-            16: 'Animação',
-            35: 'Comédia',
-            80: 'Crime',
-            99: 'Documentário',
-            18: 'Drama',
-            10751: 'Família',
-            14: 'Fantasia',
-            36: 'História',
-            27: 'Terror',
-            10402: 'Música',
-            9648: 'Mistério',
-            10749: 'Romance',
-            878: 'Ficção Científica',
-            10770: 'Cinema TV',
-            53: 'Suspense',
-            10752: 'Guerra',
-            37: 'Faroeste'
-        };
+  <script>
+    // Mapa de Gêneros (ID -> Nome do Gênero)
+    const genreMap = {
+      28: 'Ação',
+      12: 'Aventura',
+      16: 'Animação',
+      35: 'Comédia',
+      80: 'Crime',
+      99: 'Documentário',
+      18: 'Drama',
+      10751: 'Família',
+      14: 'Fantasia',
+      36: 'História',
+      27: 'Terror',
+      10402: 'Música',
+      9648: 'Mistério',
+      10749: 'Romance',
+      878: 'Ficção Científica',
+      10770: 'Cinema TV',
+      53: 'Suspense',
+      10752: 'Guerra',
+      37: 'Faroeste'
+    };
 
-        // Função para buscar informações do TMDb
-        async function fetchTMDbInfo() {
-            const movieTitle = document.getElementById("movie-title").value;
-            const apiKey = "1fc5f9008cebf466afb65b5a4e0cf5fa";
-            const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${movieTitle}&language=pt-BR`;
+    // Função para buscar informações do TMDb
+    async function fetchTMDbInfo() {
+      const movieTitle = document.getElementById("movie-title").value;
+      if (!movieTitle) {
+        alert("Por favor, insira o título do filme.");
+        return;
+      }
+      const apiKey = "1fc5f9008cebf466afb65b5a4e0cf5fa";
+      const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(movieTitle)}&language=pt-BR`;
 
-            const response = await fetch(url);
-            const data = await response.json();
-            const movie = data.results[0];
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const movie = data.results[0];
 
-            if (movie) {
-                document.getElementById("original-title").value = movie.original_title;
-                document.getElementById("year").value = movie.release_date.split("-")[0];
-                document.getElementById("rating").value = movie.vote_average;
-                document.getElementById("synopsis").value = movie.overview;
+        if (movie) {
+          document.getElementById("original-title").value = movie.original_title;
+          document.getElementById("year").value = movie.release_date.split("-")[0];
+          document.getElementById("rating").value = movie.vote_average;
+          document.getElementById("synopsis").value = movie.overview;
 
-                // Mapeando os gêneros (convertendo IDs para nomes)
-                const genres = movie.genre_ids.map(id => genreMap[id] || 'Desconhecido').join(', ');
-                document.getElementById("genre").value = genres;
-            }
+          // Converter IDs de gênero para nomes
+          const genres = movie.genre_ids.map(id => genreMap[id] || 'Desconhecido').join(', ');
+          document.getElementById("genre").value = genres;
+        } else {
+          alert("Filme não encontrado.");
         }
+      } catch (error) {
+        console.error("Erro ao buscar informações do TMDb:", error);
+        alert("Erro ao buscar informações do TMDb.");
+      }
+    }
 
-        // Função para limpar as informações
-        function clearForm() {
-            document.getElementById("movie-title").value = '';
-            document.getElementById("trailer-link").value = '';
-            document.getElementById("magnet-link").value = '';
-            document.getElementById("original-title").value = '';
-            document.getElementById("year").value = '';
-            document.getElementById("genre").value = '';
-            document.getElementById("rating").value = '';
-            document.getElementById("synopsis").value = '';
-        }
+    // Função para limpar as informações
+    function clearForm() {
+      document.getElementById("movie-title").value = '';
+      document.getElementById("trailer-link").value = '';
+      document.getElementById("magnet-link").value = '';
+      document.getElementById("original-title").value = '';
+      document.getElementById("year").value = '';
+      document.getElementById("genre").value = '';
+      document.getElementById("rating").value = '';
+      document.getElementById("synopsis").value = '';
+      document.getElementById("thumbnail").value = '';
+      document.getElementById("fanart").value = '';
+      document.getElementById("generated-xml").textContent = '';
+    }
 
-        // Função para gerar o XML
-        function generateXML() {
-            const originalTitle = document.getElementById("original-title").value;
-            const movieTitle = document.getElementById("movie-title").value;
-            const magnetLink = document.getElementById("magnet-link").value;
+    // Função para gerar o XML
+    function generateXML() {
+      const movieTitle = document.getElementById("movie-title").value;
+      const originalTitle = document.getElementById("original-title").value;
+      const trailerLink = document.getElementById("trailer-link").value;
+      const magnetLink = document.getElementById("magnet-link").value;
+      const genre = document.getElementById("genre").value;
+      const year = document.getElementById("year").value;
+      const rating = document.getElementById("rating").value;
+      const synopsis = document.getElementById("synopsis").value;
+      const thumbnail = document.getElementById("thumbnail").value;
+      const fanart = document.getElementById("fanart").value;
 
-            const genre = document.getElementById("genre").value;
-            const rating = document.getElementById("rating").value;
-            const synopsis = document.getElementById("synopsis").value;
-
-            const xml = `<item>
-    <title>[COLOR silver][B]${movieTitle}[/B][/COLOR][COLOR yellow] FULL HD[/COLOR]</title>
-    <link>plugin://plugin.video.elementum/play?uri=magnet:?xt=${magnetLink}$$lsname=[COLOR white]${movieTitle} - FILME[/COLOR]</link>
-    <info>
-        <originalTitle>${originalTitle}</originalTitle>
-        <year>${document.getElementById("year").value}</year>
-        <genre>${genre}</genre>
-        <rating>${rating}</rating>
-        <synopsis>${synopsis}</synopsis>
-    </info>
+      const xmlContent = `<item>
+  <title>[COLOR silver][B]${movieTitle}[/B][/COLOR][COLOR yellow] FULL HD[/COLOR]</title>
+  <link>plugin://plugin.video.elementum/play?uri=magnet:?xt=${magnetLink}$$lsname=[COLOR white]${movieTitle} - FILME[/COLOR]</link>
+  ${trailerLink ? `<link>plugin://plugin.video.resolverurl_player?url=${trailerLink}$$lsname=[COLOR aquamarine]TRAILER[/COLOR]</link>` : ""}
+  <thumbnail>${thumbnail}</thumbnail>
+  <fanart>${fanart}</fanart>
+  <info>[COLOR yellow]Título Original:[/COLOR]${originalTitle}[COLOR yellow]Ano:[/COLOR]${year}[COLOR yellow]Gênero:[/COLOR]${genre}[COLOR yellow]Nota:[/COLOR]${rating}[COLOR yellow]Sinopse:[/COLOR]${synopsis}</info>
 </item>`;
 
-            document.getElementById("generated-xml").textContent = xml;
-        }
+      document.getElementById("generated-xml").textContent = xmlContent;
+    }
 
-        // Função para copiar o XML gerado
-        function copyXML() {
-            const xml = document.getElementById("generated-xml").textContent;
-            navigator.clipboard.writeText(xml).then(() => {
-                alert("XML copiado para a área de transferência!");
-            });
-        }
-    </script>
+    // Função para copiar o XML gerado
+    function copyXML() {
+      const xmlContent = document.getElementById("generated-xml").textContent;
+      navigator.clipboard.writeText(xmlContent)
+        .then(() => {
+          alert("XML copiado para a área de transferência!");
+        })
+        .catch((error) => {
+          alert("Erro ao copiar XML: " + error);
+        });
+    }
+  </script>
+
 </body>
-
-  </html>
+</html>
