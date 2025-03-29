@@ -1,285 +1,173 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BluePlay - Painel de Administração</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>Gerador de XML para Kodi</title>
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
             background-color: #121212;
             color: white;
+            font-family: Arial, sans-serif;
             margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: #1f1f1f;
-            padding: 20px;
-            text-align: center;
-        }
-
-        header h1 {
-            color: #FFA500;
-            font-size: 2rem;
-            margin: 0;
-        }
-
-        main {
             padding: 20px;
         }
-
-        .order-list {
-            background-color: #333;
+        .container {
+            max-width: 800px;
+            margin: auto;
             padding: 20px;
+            background-color: #1e1e1e;
             border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            margin-top: 20px;
+            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
         }
-
-        .order-list h2 {
-            color: #FFA500;
-            text-align: center;
-            font-size: 1.5rem;
-        }
-
-        .order {
-            background-color: #444;
-            margin-bottom: 15px;
-            padding: 15px;
-            border-radius: 5px;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        .order p {
-            margin: 5px 0;
-        }
-
-        .order-actions {
-            margin-top: 10px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .order-actions button {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-
-        .order-actions button.atendido {
-            background-color: #28a745;
-            color: white;
-        }
-
-        .order-actions button.andamento {
-            background-color: #ffc107;
-            color: black;
-        }
-
-        .order-actions button.delete {
-            background-color: #dc3545;
-            color: white;
-        }
-
-        footer {
-            background-color: #1f1f1f;
-            text-align: center;
-            padding: 10px;
-            color: #888;
-            position: fixed;
-            bottom: 0;
+        input, textarea {
             width: 100%;
-        }
-
-        .login-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #121212;
-        }
-
-        .login-box {
-            background-color: #333;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .login-box input {
             padding: 10px;
-            margin: 10px 0;
-            width: 200px;
+            margin: 5px 0;
             border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
-        .login-box button {
-            padding: 10px 20px;
-            background-color: #FFA500;
-            color: white;
             border: none;
-            border-radius: 5px;
-            cursor: pointer;
+            background-color: #333;
+            color: white;
         }
-
-        /* Escondendo os elementos com a classe 'hidden' */
-        .hidden {
-            display: none;
+        button {
+            background-color: orange;
+            color: black;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: darkorange;
+        }
+        #xmlOutput {
+            background-color: #222;
+            padding: 10px;
+            margin-top: 20px;
+            border-radius: 5px;
+            white-space: pre-wrap;
         }
     </style>
 </head>
 <body>
-    <!-- Tela de Login -->
-    <div id="loginScreen" class="login-container">
-        <div class="login-box">
-            <h2>Login - Admin</h2>
-            <input type="password" id="password" placeholder="Digite a senha">
-            <button id="loginButton">Entrar</button>
-        </div>
-    </div>
 
-    <!-- Painel de Administração -->
-    <div id="adminPanel" class="hidden">
-        <header>
-            <h1>BluePlay - Painel de Administração</h1>
-        </header>
+<div class="container">
+    <h2>Gerador de XML para Kodi</h2>
 
-        <main>
-            <div class="order-list">
-                <h2>Pedidos de Filmes e Séries</h2>
-                <div id="ordersContainer"></div>
-            </div>
-        </main>
+    <label>Título do Filme:</label>
+    <input type="text" id="titulo">
 
-        <footer>
-            <p>© 2025 BluePlay - Todos os direitos reservados</p>
-        </footer>
-    </div>
+    <label>Link Magnético:</label>
+    <input type="text" id="magnetLink">
 
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
-    <script>
-        // Configuração do Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyAkmmFDwhkcY6Z4UJMYHPqHrTSPTfvop8s",
-            authDomain: "blueplayweb.firebaseapp.com",
-            databaseURL: "https://blueplayweb-default-rtdb.firebaseio.com",
-            projectId: "blueplayweb",
-            storageBucket: "blueplayweb.firebasestorage.app",
-            messagingSenderId: "1010274882829",
-            appId: "1:1010274882829:web:8188c8a0eb7b02d4d4cc44",
-            measurementId: "G-Q5SDTRY084"
-        };
+    <label>Link do Trailer:</label>
+    <input type="text" id="trailerLink">
 
-        // Inicializar Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const database = firebase.database(app);
+    <label>Thumbnail:</label>
+    <input type="text" id="thumbnail">
 
-        // Função para verificar a senha
-        const correctPassword = "admin123"; // Defina sua senha aqui
+    <label>Fanart:</label>
+    <input type="text" id="fanart">
 
-        document.getElementById('loginButton').addEventListener('click', function() {
-            const enteredPassword = document.getElementById("password").value;
+    <button onclick="buscarTMDb()">Buscar TMDb</button>
+    <button onclick="limparCampos()">❌</button>
+    <button onclick="gerarXML()">Gerar XML</button>
+    <button onclick="copiarXML()">📋 Copiar XML</button>
 
-            if (enteredPassword === correctPassword) {
-                // Redireciona para o painel de administração
-                document.getElementById("loginScreen").classList.add("hidden");
-                document.getElementById("adminPanel").classList.remove("hidden");
-                showOrders(); // Exibe os pedidos após login bem-sucedido
-            } else {
-                alert("Senha incorreta!");
-            }
-        });
+    <div id="xmlOutput"></div>
+</div>
 
-        // Função para exibir os pedidos
-        function showOrders() {
-            const ordersRef = database.ref('pedidos');
-            ordersRef.once('value', function(snapshot) {
-                const ordersContainer = document.getElementById('ordersContainer');
-                ordersContainer.innerHTML = ''; // Limpa a lista antes de exibir novos dados
-
-                snapshot.forEach(function(childSnapshot) {
-                    const pedido = childSnapshot.val();
-                    const pedidoId = childSnapshot.key;
-
-                    const orderElement = document.createElement('div');
-                    orderElement.classList.add('order');
-                    orderElement.innerHTML = `
-                        <p><strong>Nome:</strong> ${pedido.nome}</p>
-                        <p><strong>E-mail:</strong> ${pedido.email}</p>
-                        <p><strong>Pedido:</strong> ${pedido.pedido}</p>
-                        <p><strong>Status:</strong> <span id="status-${pedidoId}">${pedido.status}</span></p>
-                    `;
-
-                    const actionsDiv = document.createElement('div');
-                    actionsDiv.classList.add('order-actions');
-
-                    // Botão de "Atendido"
-                    const atendidoButton = document.createElement('button');
-                    atendidoButton.classList.add('atendido');
-                    atendidoButton.innerText = 'Atendido';
-                    atendidoButton.onclick = function() {
-                        updateOrderStatus(pedidoId, 'atendido');
-                    };
-
-                    // Botão de "Em Andamento"
-                    const andamentoButton = document.createElement('button');
-                    andamentoButton.classList.add('andamento');
-                    andamentoButton.innerText = 'Em Andamento';
-                    andamentoButton.onclick = function() {
-                        updateOrderStatus(pedidoId, 'andamento');
-                    };
-
-                    // Botão de "Deletar"
-                    const deleteButton = document.createElement('button');
-                    deleteButton.classList.add('delete');
-                    deleteButton.innerText = 'Deletar';
-                    deleteButton.onclick = function() {
-                        deleteOrder(pedidoId);
-                    };
-
-                    actionsDiv.appendChild(atendidoButton);
-                    actionsDiv.appendChild(andamentoButton);
-                    actionsDiv.appendChild(deleteButton);
-                    orderElement.appendChild(actionsDiv);
-                    ordersContainer.appendChild(orderElement);
-                });
-            });
+<script>
+    function buscarTMDb() {
+        let titulo = document.getElementById("titulo").value;
+        if (!titulo) {
+            alert("Digite o título do filme antes de buscar.");
+            return;
         }
 
-        // Função para atualizar o status do pedido
-        function updateOrderStatus(orderId, status) {
-            const statusRef = database.ref('pedidos/' + orderId);
-            statusRef.update({ status: status }, function(error) {
-                if (error) {
-                    alert('Erro ao atualizar status: ' + error.message);
+        fetch(`https://api.themoviedb.org/3/search/movie?api_key=1fc5f9008cebf466afb65b5a4e0cf5fa&query=${encodeURIComponent(titulo)}&language=pt-BR`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.results.length > 0) {
+                    let filme = data.results[0];
+                    document.getElementById("titulo").value = filme.title;
+                    document.getElementById("thumbnail").value = `https://image.tmdb.org/t/p/w500${filme.poster_path}`;
+                    document.getElementById("fanart").value = `https://image.tmdb.org/t/p/w1280${filme.backdrop_path}`;
+
+                    // Mapeamento de IDs dos gêneros para nomes
+                    const generos = {
+                        28: "Ação", 12: "Aventura", 16: "Animação", 35: "Comédia", 80: "Crime",
+                        99: "Documentário", 18: "Drama", 10751: "Família", 14: "Fantasia",
+                        36: "História", 27: "Terror", 10402: "Música", 9648: "Mistério",
+                        10749: "Romance", 878: "Ficção Científica", 10770: "Cinema TV",
+                        53: "Thriller", 10752: "Guerra", 37: "Faroeste"
+                    };
+
+                    // Converter IDs dos gêneros para nomes
+                    let generosNome = filme.genre_ids.map(id => generos[id]).filter(Boolean).join(", ");
+
+                    let info = `[COLOR yellow]Título Original:[/COLOR] ${filme.original_title}\n`
+                             + `[COLOR yellow]Ano:[/COLOR] ${filme.release_date.split("-")[0]}\n`
+                             + `[COLOR yellow]Nota:[/COLOR] ${filme.vote_average}\n`
+                             + `[COLOR yellow]Gênero:[/COLOR] ${generosNome}\n`
+                             + `[COLOR yellow]Sinopse:[/COLOR] ${filme.overview}`;
+
+                    localStorage.setItem("info", info);
                 } else {
-                    document.getElementById('status-' + orderId).innerText = status;
-                    alert('Status atualizado com sucesso!');
+                    alert("Filme não encontrado.");
                 }
-            });
+            })
+            .catch(error => console.error("Erro ao buscar TMDb:", error));
+    }
+
+    function limparCampos() {
+        document.getElementById("titulo").value = "";
+        document.getElementById("magnetLink").value = "";
+        document.getElementById("trailerLink").value = "";
+        document.getElementById("thumbnail").value = "";
+        document.getElementById("fanart").value = "";
+        document.getElementById("xmlOutput").innerHTML = "";
+        localStorage.removeItem("info");
+    }
+
+    function gerarXML() {
+        let titulo = document.getElementById("titulo").value;
+        let magnetLink = document.getElementById("magnetLink").value;
+        let trailerLink = document.getElementById("trailerLink").value;
+        let thumbnail = document.getElementById("thumbnail").value;
+        let fanart = document.getElementById("fanart").value;
+        let info = localStorage.getItem("info") || "";
+
+        if (!titulo || !magnetLink) {
+            alert("Preencha os campos obrigatórios.");
+            return;
         }
 
-        // Função para deletar um pedido
-        function deleteOrder(orderId) {
-            const orderRef = database.ref('pedidos/' + orderId);
-            orderRef.remove(function(error) {
-                if (error) {
-                    alert('Erro ao deletar pedido: ' + error.message);
-                } else {
-                    alert('Pedido deletado com sucesso!');
-                    showOrders(); // Atualiza a lista de pedidos
-                }
-            });
+        let xml = `<item>\n`
+                + `<title>[COLOR silver][B]${titulo}[/B][/COLOR][COLOR yellow] FULL HD[/COLOR]</title>\n`
+                + `<link>plugin://plugin.video.elementum/play?uri=${magnetLink}$$lsname=[COLOR white]${titulo} - FILME[/COLOR]</link>\n`
+                + (trailerLink ? `<link>plugin://plugin.video.resolverurl_player?url=${trailerLink}$$lsname=[COLOR aquamarine]TRAILER[/COLOR]</link>\n` : "")
+                + `<thumbnail>${thumbnail}</thumbnail>\n`
+                + `<fanart>${fanart}</fanart>\n`
+                + `<info>\n${info}\n</info>\n`
+                + `</item>`;
+
+        document.getElementById("xmlOutput").innerText = xml;
+    }
+
+    function copiarXML() {
+        let xml = document.getElementById("xmlOutput").innerText;
+        if (!xml) {
+            alert("Nenhum XML gerado para copiar.");
+            return;
         }
-    </script>
+
+        navigator.clipboard.writeText(xml).then(() => {
+            alert("XML copiado para a área de transferência!");
+        }).catch(err => console.error("Erro ao copiar:", err));
+    }
+</script>
+
 </body>
 </html>
