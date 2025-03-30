@@ -50,35 +50,30 @@
         }
     </style>
 </head>
-<body>
+<body><div class="container">
+    <h2>Gerador de XML para Kodi</h2><label>Título do Filme:</label>
+<input type="text" id="titulo">
 
-<div class="container">
-    <h2>Gerador de XML para Kodi</h2>
+<label>Link Magnético:</label>
+<input type="text" id="magnetLink">
 
-    <label>Título do Filme:</label>
-    <input type="text" id="titulo">
+<label>ID do Trailer:</label>
+<input type="text" id="trailerLink">
 
-    <label>Link Magnético:</label>
-    <input type="text" id="magnetLink">
+<label>Thumbnail:</label>
+<input type="text" id="thumbnail">
 
-    <label>Link do Trailer:</label>
-    <input type="text" id="trailerLink">
+<label>Fanart:</label>
+<input type="text" id="fanart">
 
-    <label>Thumbnail:</label>
-    <input type="text" id="thumbnail">
+<button onclick="buscarTMDb()">Buscar TMDb</button>
+<button onclick="limparCampos()">❌</button>
+<button onclick="gerarXML()">Gerar XML</button>
+<button onclick="copiarXML()">📋 Copiar XML</button>
 
-    <label>Fanart:</label>
-    <input type="text" id="fanart">
+<div id="xmlOutput"></div>
 
-    <button onclick="buscarTMDb()">Buscar TMDb</button>
-    <button onclick="limparCampos()">❌</button>
-    <button onclick="gerarXML()">Gerar XML</button>
-    <button onclick="copiarXML()">📋 Copiar XML</button>
-
-    <div id="xmlOutput"></div>
-</div>
-
-<script>
+</div><script>
     function buscarTMDb() {
         let titulo = document.getElementById("titulo").value;
         if (!titulo) {
@@ -94,26 +89,6 @@
                     document.getElementById("titulo").value = filme.title;
                     document.getElementById("thumbnail").value = `https://image.tmdb.org/t/p/w500${filme.poster_path}`;
                     document.getElementById("fanart").value = `https://image.tmdb.org/t/p/w1280${filme.backdrop_path}`;
-
-                    // Mapeamento de IDs dos gêneros para nomes
-                    const generos = {
-                        28: "Ação", 12: "Aventura", 16: "Animação", 35: "Comédia", 80: "Crime",
-                        99: "Documentário", 18: "Drama", 10751: "Família", 14: "Fantasia",
-                        36: "História", 27: "Terror", 10402: "Música", 9648: "Mistério",
-                        10749: "Romance", 878: "Ficção Científica", 10770: "Cinema TV",
-                        53: "Thriller", 10752: "Guerra", 37: "Faroeste"
-                    };
-
-                    // Converter IDs dos gêneros para nomes
-                    let generosNome = filme.genre_ids.map(id => generos[id]).filter(Boolean).join(", ");
-
-                    let info = `[COLOR yellow]Título Original:[/COLOR] ${filme.original_title}\n`
-                             + `[COLOR yellow]Ano:[/COLOR] ${filme.release_date.split("-")[0]}\n`
-                             + `[COLOR yellow]Nota:[/COLOR] ${filme.vote_average}\n`
-                             + `[COLOR yellow]Gênero:[/COLOR] ${generosNome}\n`
-                             + `[COLOR yellow]Sinopse:[/COLOR] ${filme.overview}`;
-
-                    localStorage.setItem("info", info);
                 } else {
                     alert("Filme não encontrado.");
                 }
@@ -128,7 +103,6 @@
         document.getElementById("thumbnail").value = "";
         document.getElementById("fanart").value = "";
         document.getElementById("xmlOutput").innerHTML = "";
-        localStorage.removeItem("info");
     }
 
     function gerarXML() {
@@ -137,7 +111,6 @@
         let trailerLink = document.getElementById("trailerLink").value;
         let thumbnail = document.getElementById("thumbnail").value;
         let fanart = document.getElementById("fanart").value;
-        let info = localStorage.getItem("info") || "";
 
         if (!titulo || !magnetLink) {
             alert("Preencha os campos obrigatórios.");
@@ -147,10 +120,9 @@
         let xml = `<item>\n`
                 + `<title>[COLOR silver][B]${titulo}[/B][/COLOR][COLOR yellow] FULL HD[/COLOR]</title>\n`
                 + `<link>plugin://plugin.video.elementum/play?uri=${magnetLink}$$lsname=[COLOR white]${titulo} - FILME[/COLOR]</link>\n`
-                + (trailerLink ? `<link>plugin://plugin.video.resolverurl_player?url=${trailerLink}$$lsname=[COLOR aquamarine]TRAILER[/COLOR]</link>\n` : "")
+                + (trailerLink ? `<link>plugin://plugin.video.youtube/play/?video_id=${trailerLink}_channel$$lsname=[COLOR aquamarine]TRAILER[/COLOR]</link>\n` : "")
                 + `<thumbnail>${thumbnail}</thumbnail>\n`
                 + `<fanart>${fanart}</fanart>\n`
-                + `<info>\n${info}\n</info>\n`
                 + `</item>`;
 
         document.getElementById("xmlOutput").innerText = xml;
@@ -167,7 +139,5 @@
             alert("XML copiado para a área de transferência!");
         }).catch(err => console.error("Erro ao copiar:", err));
     }
-</script>
-
-</body>
+</script></body>
 </html>
