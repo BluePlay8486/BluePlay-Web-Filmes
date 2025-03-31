@@ -2,142 +2,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Filtrar Grupos M3U</title>
+    <title>Gerador de XML para Kodi</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
             background-color: #121212;
-            color: #ffffff;
-            text-align: center;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
             padding: 20px;
         }
         .container {
-            max-width: 600px;
+            max-width: 800px;
             margin: auto;
-            background: #1e1e1e;
             padding: 20px;
+            background-color: #1e1e1e;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
         }
-        input, button {
+        input, textarea {
             width: 100%;
             padding: 10px;
             margin: 5px 0;
-            border: none;
             border-radius: 5px;
-        }
-        input {
-            background: #333;
-            color: #fff;
+            border: none;
+            background-color: #333;
+            color: white;
         }
         button {
-            background: #ff5722;
-            color: #fff;
-            font-weight: bold;
+            background-color: orange;
+            color: black;
+            padding: 10px 15px;
+            border: none;
             cursor: pointer;
+            border-radius: 5px;
+            margin: 5px;
         }
         button:hover {
-            background: #e64a19;
+            background-color: darkorange;
         }
-        .group-list {
-            text-align: left;
-            max-height: 300px;
-            overflow-y: auto;
-            background: #333;
+        #xmlOutput {
+            background-color: #222;
             padding: 10px;
+            margin-top: 20px;
             border-radius: 5px;
-            margin-top: 10px;
-        }
-        .group-list label {
-            display: block;
-            margin: 5px 0;
+            white-space: pre-wrap;
         }
     </style>
-    <script>
-        let m3uContent = "";
-        let groups = new Set();
-        let channelsByGroup = {};function uploadFile() {
-        const fileInput = document.getElementById("fileUpload");
-        const file = fileInput.files[0];
-        if (!file) return;
-        
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            m3uContent = event.target.result;
-            extractGroups();
-        };
-        reader.readAsText(file);
-    }
-
-    function extractGroups() {
-        groups.clear();
-        channelsByGroup = {};
-        const lines = m3uContent.split("\n");
-        let currentGroup = "Sem Grupo";
-
-        for (let i = 0; i < lines.length; i++) {
-            if (lines[i].includes("group-title")) {
-                const match = lines[i].match(/group-title="(.*?)"/);
-                if (match) {
-                    currentGroup = match[1];
-                    groups.add(currentGroup);
-                }
-            }
-            if (!channelsByGroup[currentGroup]) {
-                channelsByGroup[currentGroup] = [];
-            }
-            channelsByGroup[currentGroup].push(lines[i]);
-        }
-        displayGroups();
-    }
-
-    function displayGroups() {
-        const groupListDiv = document.getElementById("groupList");
-        groupListDiv.innerHTML = "";
-        groups.forEach(group => {
-            let label = document.createElement("label");
-            let checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.value = group;
-            label.appendChild(checkbox);
-            label.appendChild(document.createTextNode(" " + group));
-            groupListDiv.appendChild(label);
-        });
-    }
-
-    function generateFilteredM3U() {
-        let selectedGroups = new Set();
-        document.querySelectorAll("#groupList input:checked").forEach(checkbox => {
-            selectedGroups.add(checkbox.value);
-        });
-        
-        let filteredM3U = "#EXTM3U\n";
-        selectedGroups.forEach(group => {
-            if (channelsByGroup[group]) {
-                filteredM3U += channelsByGroup[group].join("\n") + "\n";
-            }
-        });
-
-        downloadM3U(filteredM3U);
-    }
-
-    function downloadM3U(content) {
-        const blob = new Blob([content], { type: "text/plain" });
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = "filtered_list.m3u";
-        a.click();
-    }
-</script>
-
 </head>
-<body>
-    <div class="container">
-        <h1>Filtrar Grupos M3U</h1>
-        <input type="file" id="fileUpload">
-        <button onclick="uploadFile()">Enviar Lista M3U</button>
-        <div class="group-list" id="groupList"></div>
-        <button onclick="generateFilteredM3U()">Gerar Nova Lista M3U</button>
-    </div>
-</body>
+<body><div class="container">
+    <h2>Gerador de XML para Kodi</h2><label>Título do Filme:</label>
+<input type="text" id="titulo">
+
+<label>Link Magnético:</label>
+<input type="text" id="magnetLink">
+
+<label>Link Direto 1:</label>
+<input type="text" id="linkDireto1">
+
+<label>Link Direto 2:</label>
+<input type="text" id="linkDireto2">
+
+<label>ID do Trailer (YouTube):</label>
+<input type="text" id="trailerID">
+
+<label>Thumbnail:</label>
+<input type="text" id="thumbnail">
+
+<label>Fanart:</label>
+<input type="text" id="fanart">
+
+<button onclick="buscarTMDb()">Buscar TMDb</button>
+<button onclick="limparCampos()">❌</button>
+<button onclick="gerarXML()">Gerar XML</button>
+<button onclick="copiarXML()">📋 Copiar XML</button>
+
+<div id="xmlOutput"></div>
+
+</div><script>
+    function buscarTMDb() {
+        let titulo = document.getElementById("titulo").value;
+        if (!titulo) {
+            alert("Digite o título do filme antes de buscar.");
+            return;
+        }
+
+        fetch(`https://api.themoviedb.org/3/search/movie?api_key=1fc5f9008cebf466afb65b5a4e0cf5fa&query=${encodeURIComponent(titulo)}&language=pt-BR`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.results.length > 0) {
+                    let filme = data.results[0];
+                    document.getElementById("titulo").value = filme.title;
+                    document.getElementById("thumbnail").value = `https://image.tmdb.org/t/p/w500${filme.poster_path}`;
+                    document.getElementById("fanart").value = `https://image.tmdb.org/t/p/w1280${filme.backdrop_path}`;
+
+                    const generos = {
+                        28: "Ação", 12: "Aventura", 16: "Animação", 35: "Comédia", 80: "Crime",
+                        99: "Documentário", 18: "Drama", 10751: "Família", 14: "Fantasia",
+                        36: "História", 27: "Terror", 10402: "Música", 9648: "Mistério",
+                        10749: "Romance", 878: "Ficção Científica", 10770: "Cinema TV",
+                        53: "Thriller", 10752: "Guerra", 37: "Faroeste"
+                    };
+
+                    let generosNome = filme.genre_ids.map(id => generos[id]).filter(Boolean).join(", ");
+                    let info = `[COLOR yellow]Título Original:[/COLOR] ${filme.original_title}\n`
+                             + `[COLOR yellow]Ano:[/COLOR] ${filme.release_date.split("-")[0]}\n`
+                             + `[COLOR yellow]Nota:[/COLOR] ${filme.vote_average}\n`
+                             + `[COLOR yellow]Gênero:[/COLOR] ${generosNome}\n`
+                             + `[COLOR yellow]Sinopse:[/COLOR] ${filme.overview}`;
+
+                    localStorage.setItem("info", info);
+                } else {
+                    alert("Filme não encontrado.");
+                }
+            })
+            .catch(error => console.error("Erro ao buscar TMDb:", error));
+    }
+
+    function gerarXML() {
+        let titulo = document.getElementById("titulo").value;
+        let magnetLink = document.getElementById("magnetLink").value;
+        let linkDireto1 = document.getElementById("linkDireto1").value;
+        let linkDireto2 = document.getElementById("linkDireto2").value;
+        let trailerID = document.getElementById("trailerID").value;
+        let thumbnail = document.getElementById("thumbnail").value;
+        let fanart = document.getElementById("fanart").value;
+        let info = localStorage.getItem("info") || "";
+
+        let xml = `<item>\n`
+                + `<title>[COLOR silver][B]${titulo}[/B][/COLOR][COLOR yellow] FULL HD[/COLOR]</title>\n`
+                + `<link>plugin://plugin.video.elementum/play?uri=${magnetLink}$$lsname=[COLOR white]${titulo} - FILME[/COLOR]</link>\n`
+                + (linkDireto1 ? `<link>plugin://plugin.video.resolverurl_player?url=${linkDireto1}$$lsname=[COLOR white]LINK[/COLOR][COLOR aquamarine]DIRETO 1[/COLOR]</link>\n` : "")
+                + (linkDireto2 ? `<link>plugin://plugin.video.resolverurl_player?url=${linkDireto2}$$lsname=[COLOR white]LINK[/COLOR][COLOR aquamarine]DIRETO 2[/COLOR]</link>\n` : "")
+                + (trailerID ? `<link>plugin://plugin.video.youtube/play/?video_id=${trailerID}$$lsname=[COLOR aquamarine]TRAILER[/COLOR]</link>\n` : "")
+                + `<thumbnail>${thumbnail}</thumbnail>\n`
+                + `<fanart>${fanart}</fanart>\n`
+                + `<info>\n${info}\n</info>\n`
+                + `</item>`;
+
+        document.getElementById("xmlOutput").innerText = xml;
+    }
+</script></body>
 </html>
