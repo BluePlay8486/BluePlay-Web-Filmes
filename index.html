@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,106 +18,155 @@
             padding: 20px;
             background-color: #1e1e1e;
             border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
+            box-shadow: 0px 0px 15px rgba(0, 255, 255, 0.3);
+        }
+        h2 {
+            color: aquamarine;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        label {
+            font-size: 16px;
+            color: aquamarine;
+            margin-bottom: 5px;
         }
         input, textarea {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin: 5px 0;
-            border-radius: 5px;
+            border-radius: 8px;
             border: none;
             background-color: #333;
             color: white;
+            font-size: 16px;
         }
         button {
-            background-color: orange;
+            background-color: aquamarine;
             color: black;
-            padding: 10px 15px;
+            padding: 12px 20px;
             border: none;
             cursor: pointer;
-            border-radius: 5px;
-            margin: 5px;
+            border-radius: 8px;
+            margin: 10px 5px;
+            font-size: 16px;
         }
         button:hover {
-            background-color: darkorange;
+            background-color: #00ced1;
         }
         #xmlOutput {
             background-color: #222;
-            padding: 10px;
+            padding: 15px;
             margin-top: 20px;
-            border-radius: 5px;
+            border-radius: 10px;
             white-space: pre-wrap;
+            color: aquamarine;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+            color: aquamarine;
         }
     </style>
 </head>
-<body><div class="container">
-    <h2>Gerador de XML para Kodi</h2><label>Título do Filme:</label>
-<input type="text" id="titulo">
+<body>
 
-<label>Link Magnético:</label>
-<input type="text" id="magnetLink">
+<div class="container">
+    <h2>Gerador de XML para Kodi</h2>
 
-<label>Link Direto 1:</label>
-<input type="text" id="linkDireto1">
+    <label for="titulo">Título do Filme:</label>
+    <input type="text" id="titulo" placeholder="Digite o título do filme">
 
-<label>Link Direto 2:</label>
-<input type="text" id="linkDireto2">
+    <label for="magnetLink">Link Magnético:</label>
+    <input type="text" id="magnetLink" placeholder="Digite o link magnético">
 
-<label>ID do Trailer (YouTube):</label>
-<input type="text" id="trailerID">
+    <label for="linkDireto1">Link Direto 1:</label>
+    <input type="text" id="linkDireto1" placeholder="Digite o link direto 1">
 
-<label>Thumbnail:</label>
-<input type="text" id="thumbnail">
+    <label for="linkDireto2">Link Direto 2:</label>
+    <input type="text" id="linkDireto2" placeholder="Digite o link direto 2">
 
-<label>Fanart:</label>
-<input type="text" id="fanart">
+    <label for="trailerID">ID do Trailer (YouTube):</label>
+    <input type="text" id="trailerID" placeholder="Digite o ID do trailer">
 
-<button onclick="buscarTMDb()">Buscar TMDb</button>
-<button onclick="limparCampos()">❌</button>
-<button onclick="gerarXML()">Gerar XML</button>
-<button onclick="copiarXML()">📋 Copiar XML</button>
+    <label for="thumbnail">Thumbnail:</label>
+    <input type="text" id="thumbnail" placeholder="Digite o link da thumbnail">
 
-<div id="xmlOutput"></div>
+    <label for="fanart">Fanart:</label>
+    <input type="text" id="fanart" placeholder="Digite o link do fanart">
 
-</div><script>
-    function buscarTMDb() {
-        let titulo = document.getElementById("titulo").value;
-        if (!titulo) {
-            alert("Digite o título do filme antes de buscar.");
-            return;
-        }
+    <button onclick="buscarTMDb()">Buscar TMDb</button>
+    <button onclick="limparCampos()">❌ Limpar</button>
+    <button onclick="gerarXML()">Gerar XML</button>
+    <button onclick="copiarXML()">📋 Copiar XML</button>
 
-        fetch(`https://api.themoviedb.org/3/search/movie?api_key=1fc5f9008cebf466afb65b5a4e0cf5fa&query=${encodeURIComponent(titulo)}&language=pt-BR`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.results.length > 0) {
-                    let filme = data.results[0];
-                    document.getElementById("titulo").value = filme.title;
-                    document.getElementById("thumbnail").value = `https://image.tmdb.org/t/p/w500${filme.poster_path}`;
-                    document.getElementById("fanart").value = `https://image.tmdb.org/t/p/w1280${filme.backdrop_path}`;
+    <div id="xmlOutput"></div>
+</div>
 
-                    const generos = {
-                        28: "Ação", 12: "Aventura", 16: "Animação", 35: "Comédia", 80: "Crime",
-                        99: "Documentário", 18: "Drama", 10751: "Família", 14: "Fantasia",
-                        36: "História", 27: "Terror", 10402: "Música", 9648: "Mistério",
-                        10749: "Romance", 878: "Ficção Científica", 10770: "Cinema TV",
-                        53: "Thriller", 10752: "Guerra", 37: "Faroeste"
-                    };
+<div class="footer">
+    <p>Projeto desenvolvido para facilitar a criação de XMLs para o Kodi. <br>Powered by Aquamarine!</p>
+</div>
 
-                    let generosNome = filme.genre_ids.map(id => generos[id]).filter(Boolean).join(", ");
-                    let info = `[COLOR yellow]Título Original:[/COLOR] ${filme.original_title}\n`
-                             + `[COLOR yellow]Ano:[/COLOR] ${filme.release_date.split("-")[0]}\n`
-                             + `[COLOR yellow]Nota:[/COLOR] ${filme.vote_average}\n`
-                             + `[COLOR yellow]Gênero:[/COLOR] ${generosNome}\n`
-                             + `[COLOR yellow]Sinopse:[/COLOR] ${filme.overview}`;
-
-                    localStorage.setItem("info", info);
-                } else {
-                    alert("Filme não encontrado.");
-                }
-            })
-            .catch(error => console.error("Erro ao buscar TMDb:", error));
+<script>
+function buscarTMDb() {
+    let titulo = document.getElementById("titulo").value;
+    if (!titulo) {
+        alert("Digite o título do filme antes de buscar.");
+        return;
     }
+
+    fetch(`https://api.themoviedb.org/3/search/movie?api_key=1fc5f9008cebf466afb65b5a4e0cf5fa&query=${encodeURIComponent(titulo)}&language=pt-BR`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.results.length > 0) {
+                let filme = data.results[0];
+
+                // Segunda requisição para detalhes do filme
+                fetch(`https://api.themoviedb.org/3/movie/${filme.id}?api_key=1fc5f9008cebf466afb65b5a4e0cf5fa&append_to_response=credits&language=pt-BR`)
+                    .then(response => response.json())
+                    .then(detalhes => {
+                        document.getElementById("titulo").value = filme.title;
+                        document.getElementById("thumbnail").value = `https://image.tmdb.org/t/p/w500${filme.poster_path}`;
+                        document.getElementById("fanart").value = `https://image.tmdb.org/t/p/w1280${filme.backdrop_path}`;
+
+                        const generos = {
+                            28: "Ação", 12: "Aventura", 16: "Animação", 35: "Comédia", 80: "Crime",
+                            99: "Documentário", 18: "Drama", 10751: "Família", 14: "Fantasia",
+                            36: "História", 27: "Terror", 10402: "Música", 9648: "Mistério",
+                            10749: "Romance", 878: "Ficção Científica", 10770: "Cinema TV",
+                            53: "Thriller", 10752: "Guerra", 37: "Faroeste"
+                        };
+
+                        let generosNome = filme.genre_ids.map(id => generos[id]).filter(Boolean).join(", ");
+                        let elencoPrincipal = detalhes.credits.cast.slice(0, 5).map(ator => ator.name).join(", ");
+                        let diretor = detalhes.credits.crew.find(pessoa => pessoa.job === "Director")?.name || "Não disponível";
+                        let nota = filme.vote_average ? filme.vote_average.toFixed(1) : "N/A";
+
+                        let horas = Math.floor(detalhes.runtime / 60);
+                        let minutos = detalhes.runtime % 60;
+                        let duracao = detalhes.runtime ? `${horas}h ${minutos}min` : "Não disponível";
+
+                        let info = `[COLOR yellow]Título Original:[/COLOR] ${filme.original_title}\n`
+                                + `[COLOR yellow]Elenco Principal:[/COLOR] ${elencoPrincipal}\n`
+                                + `[COLOR yellow]Duração:[/COLOR] ${duracao}\n`
+                                + `[COLOR yellow]Diretor:[/COLOR] ${diretor}\n`
+                                + `[COLOR yellow]Ano:[/COLOR] ${filme.release_date.split("-")[0]}\n`
+                                + `[COLOR yellow]Nota:[/COLOR] ${nota}\n`
+                                + `[COLOR yellow]Gênero:[/COLOR] ${generosNome}\n`
+                                + `[COLOR yellow]Sinopse:[/COLOR] ${filme.overview}\n`;
+
+                        localStorage.setItem("info", info);
+                    })
+                    .catch(error => console.error("Erro ao buscar detalhes do filme:", error));
+            } else {
+                alert("Filme não encontrado.");
+            }
+        })
+        .catch(error => console.error("Erro ao buscar TMDb:", error));
+}
 
     function gerarXML() {
         let titulo = document.getElementById("titulo").value;
@@ -141,5 +191,26 @@
 
         document.getElementById("xmlOutput").innerText = xml;
     }
-</script></body>
+
+    function limparCampos() {
+        document.getElementById("titulo").value = '';
+        document.getElementById("magnetLink").value = '';
+        document.getElementById("linkDireto1").value = '';
+        document.getElementById("linkDireto2").value = '';
+        document.getElementById("trailerID").value = '';
+        document.getElementById("thumbnail").value = '';
+        document.getElementById("fanart").value = '';
+        document.getElementById("xmlOutput").innerText = '';
+        localStorage.removeItem("info");
+    }
+
+    function copiarXML() {
+        let xml = document.getElementById("xmlOutput").innerText;
+        navigator.clipboard.writeText(xml).then(() => {
+            alert("XML copiado para a área de transferência!");
+        });
+    }
+</script>
+
+</body>
 </html>
